@@ -3,7 +3,7 @@
     <head>
         <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
         <title></title>
-        <style>
+        <style id="original-style">
             .half-document-width {
                 width: 45%;
                 margin: auto;
@@ -27,12 +27,20 @@
             
             .buttons {
                 float: left;
+                width: 8%;
                 margin-left: 10px;
                 margin-right: 10px;
             }
             
             .button {
-                width: 70px;
+                width: 100%;
+                height: 33%;
+                overflow: hidden;
+                background-color: lightblue;
+            }
+            
+            .button:hover {
+                background-color: steelblue;
             }
             
             .bothEditors {
@@ -45,6 +53,10 @@
                 display: table;
                 clear: both;
             }    
+        </style>
+        
+        <style id='user-style'>
+            
         </style>
         
         <script>
@@ -62,13 +74,34 @@
             
             function setButtonsHeight() {
                 $('.buttons').css('margin-top', $('.half-document-width').height() - $('.buttons').height());
-                $('.button').height($('#html-editor').height() / 3);
+                $('.buttons').height($('#html-editor').height() + 3.172);
+            }
+            
+            function launchBtnClick() {
+                $('#launch-btn').click(function() {
+                     $('.display').html($('#html-editor').val());
+                });
+            }
+            
+            function clearBtnClick() {
+                $('#clear-btn').click(function() {
+                    $('#html-editor').val("");
+                });
+            }
+            
+            function toggleBtnClick() {
+                $('#toggle-btn').click(function() {
+                    $('#user-style').html($('#css-editor').val());
+                })
             }
             
             $(document).ready(function() {
                 setEditorHeight();
-                setDisplayHeight();
                 setButtonsHeight();
+                setDisplayHeight();
+                launchBtnClick();
+                clearBtnClick();
+                toggleBtnClick()
             });
             
             $(window).resize(function() {
@@ -94,7 +127,7 @@
                 <textarea id="css-editor" class="editor">Blah</textarea>
             </div>
         </div>
-        <div class="full-document-width">
+        <div class="full-document-width display">
             <h1>blah</h1>
         </div>
         
