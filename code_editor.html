@@ -94,14 +94,15 @@
                 $('#toggle-btn').click(function() {
                     // $('#user-style').html($('#css-editor').val());
                     // (.*?\{(\n|.)*?\})
-                    http://www.bennadel.com/blog/697-javascript-exec-method-for-regular-expression-matching.htm
+                    // http://www.bennadel.com/blog/697-javascript-exec-method-for-regular-expression-matching.htm
                     var cssRegEx = /.*?\{(\n|.)*?\}/;
                     var cssRulesArray = null;
                     $('#user-style').html("");
                     while(cssRulesArray = cssRegEx.exec($('#css-editor').val())) {
-                        $('#user-style').html($('#user-style') + ".display " + cssRulesArray[1]);
+                        console.log(cssRulesArray[1]);
+                        // $('#user-style').html($('#user-style') + ".display " + cssRulesArray[1]);
                     }
-                })
+                });
             }
             
             $(document).ready(function() {
