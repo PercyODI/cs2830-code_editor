@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <title></title>
+        <style>
+            .half-document-width {
+                width: 45%;
+                margin: auto;
+                float: left;
+                /*overflow: auto;*/
+                /*border: 1px dashed black;*/
+            }
+            
+            .full-document-width {
+                width: 100%;
+                margin: auto;
+            }
+            
+            .editor {
+                display: block;
+                resize: none;
+                outline: none;
+                width: 99%;
+                margin: auto;
+            }
+            
+            .buttons {
+                float: left;
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+            
+            .button {
+                width: 70px;
+            }
+            
+            .bothEditors {
+                padding-bottom: 5px;
+                border-bottom: 1px dashed steelblue;
+            }
+            
+            .bothEditors:after {
+                content: "";
+                display: table;
+                clear: both;
+            }    
+        </style>
+        
+        <script>
+            function setDisplayHeight () {
+                var elementOffset = $(".full-document-width").offset().top;
+                var distanceFromBotom = $(window).height() - elementOffset;
+                $('.full-document-width').height(distanceFromBotom);
+            }
+            
+            function setEditorHeight() {
+                var elementOffset = $(".half-document-width .editor").offset().top;
+                var distanceFromBotom = $(window).height() - elementOffset;
+                $('.half-document-width .editor').height(distanceFromBotom / 4);
+            }
+            
+            function setButtonsHeight() {
+                $('.buttons').css('margin-top', $('.half-document-width').height() - $('.buttons').height());
+                $('.button').height($('#html-editor').height() / 3);
+            }
+            
+            $(document).ready(function() {
+                setEditorHeight();
+                setDisplayHeight();
+                setButtonsHeight();
+            });
+            
+            $(window).resize(function() {
+                setEditorHeight();
+                setDisplayHeight();
+                setButtonsHeight();
+            });
+        </script>
+    </head>
+    <body>
+        <div class="bothEditors">
+            <div class="half-document-width">
+                <h2>HTML Code</h2>
+                <textarea id="html-editor" class="editor" display: block>Blah</textarea>
+            </div>
+            <div class="buttons">
+                <button type="button" id="launch-btn" class="button">Launch</button><br>
+                <button type="button" id="toggle-btn" class="button">Toggle</button><br>
+                <button type="button" id="clear-btn" class="button">Clear</button><br>
+            </div>
+            <div class="half-document-width">
+                <h2>CSS Code</h2>
+                <textarea id="css-editor" class="editor">Blah</textarea>
+            </div>
+        </div>
+        <div class="full-document-width">
+            <h1>blah</h1>
+        </div>
+        
+    </body>
+</html>
