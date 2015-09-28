@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <style>
+            .editor-box {
+                float: left;
+            }
+            
+            .editor {
+                width: 600px;
+                height: 200px;
+                resize: none;
+            }
+            
+            .clear-float-box:after {
+                content: "";
+                display: table;
+                clear: both;
+            } 
+            
+            .button {
+                width: 75px;
+            }
+            
+            #display {
+                width: 1212px;
+                height: 450px;
+                overflow: auto;
+                border: 1px solid black;
+            }
+            
+            #html-backing {
+                position: absolute;
+                top: 60px;
+                left: 225px;
+                color: lightgray;
+                opacity: 0.6;
+            }
+            
+            #css-backing {
+                position: absolute;
+                top: 60px;
+                left: 875px;
+                color: lightgray;
+                opacity: 0.6;
+                
+            }
+        </style>
+        <style id='user-style'></style>
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script>
+            var is_toggled = false;
+        
+            function launch_btn_click() {
+                $('#launch-btn').click(function(){
+                    $('#display').html($('#html-editor').val());
+                });
+                
+            }
+            
+            function clear_btn_click() {
+                $('#clear-btn').click(function() {
+                    $('#html-editor').val('');
+                    $('#css-editor').val('');
+                    $('#display').html('');
+                });
+            }
+            
+            function css_regex() {
+                var css_pattern = /(.*\{(.|\n)*?\})*/gm;
+                var arrMatch = null;
+                var strMatch = "";
+                arrMatch = $('#css-editor').val().match(css_pattern);
+                console.dir(arrMatch);
+                var x;
+                for (x in arrMatch) {
+                    if (arrMatch[x] != "") {
+                        strMatch = strMatch + "\n#display " + arrMatch[x];
+                    }
+                }
+                $('#user-style').html(strMatch);
+            }
+            
+            function toggle_btn_click() {
+                $('#toggle-btn').click(function() {
+                    if (is_toggled == false) {
+                        // $('#user-style').html($('#css-editor').val());
+                        css_regex();
+                        is_toggled = true;
+                        
+                    } else {
+                        $('#user-style').html('');
+                        is_toggled = false;
+                    }
+                });
+            }
+        
+            $(document).ready(function() {
+                console.log("Ready!");
+                launch_btn_click();
+                clear_btn_click();
+                toggle_btn_click();
+            });
+        </script>
+    </head>
+    <body>
+        <div class="clear-float-box">
+            <div id="html-box" class="editor-box">
+                <textarea id="html-editor" class="editor">Blah<h1>test</h1></textarea>
+            </div>
+            <div id="css-box" class="editor-box">
+                <textarea id="css-editor" class="editor">
+ h1 { color: blue; }
+ .editor-box {
+    float: left;
+}
+
+.editor {
+    width: 600px;
+    height: 200px;
+    resize: none;
+}
+
+.clear-float-box:after {
+    content: "";
+    display: table;
+    clear: both;
+} 
+
+.button {
+    width: 75px;
+}
+            </textarea>
+            </div>
+            <div class="buttons">
+                <button type="button" id="launch-btn" class="button">Launch</button><br>
+                <button type="button" id="toggle-btn" class="button">Toggle</button><br>
+                <button type="button" id="clear-btn" class="button">Clear</button><br>
+            </div>
+        </div>
+        <div id="display">
+            Blah
+        </div>
+        <div id="html-backing"><h1>HTML</h1></div>
+        <div id="css-backing"><h1>CSS</h1></div>
+    </body>
+</html>
