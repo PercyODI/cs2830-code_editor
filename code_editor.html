@@ -5,8 +5,8 @@
         <title></title>
         <style id="original-style">
             .half-document-width {
-                width: 700px;
-                height: 200px;
+                width: 45%;
+                margin: auto;
                 float: left;
                 /*overflow: auto;*/
                 /*border: 1px dashed black;*/
@@ -21,11 +21,8 @@
                 display: block;
                 resize: none;
                 outline: none;
-                width: 98%;
-                height: 98%;
-                margin: 0;
-                padding: 0;
-                border: 1px solid gray;
+                width: 99%;
+                margin: auto;
             }
             
             .buttons {
@@ -46,10 +43,10 @@
                 background-color: steelblue;
             }
             
-            /*.bothEditors {*/
-            /*    padding-bottom: 5px;*/
-            /*    border-bottom: 1px dashed steelblue;*/
-            /*}*/
+            .bothEditors {
+                padding-bottom: 5px;
+                border-bottom: 1px dashed steelblue;
+            }
             
             .bothEditors:after {
                 content: "";
@@ -109,34 +106,36 @@
             }
             
             $(document).ready(function() {
-                // setEditorHeight();
-                // setButtonsHeight();
-                // setDisplayHeight();
+                setEditorHeight();
+                setButtonsHeight();
+                setDisplayHeight();
                 launchBtnClick();
                 clearBtnClick();
                 toggleBtnClick()
             });
             
-            // $(window).resize(function() {
-            //     setEditorHeight();
-            //     setDisplayHeight();
-            //     setButtonsHeight();
-            // });
+            $(window).resize(function() {
+                setEditorHeight();
+                setDisplayHeight();
+                setButtonsHeight();
+            });
         </script>
     </head>
     <body>
         <div class="bothEditors">
             <div class="half-document-width">
+                <h2>HTML Code</h2>
                 <textarea id="html-editor" class="editor" display: block>Blah</textarea>
             </div>
+            <div class="buttons">
+                <button type="button" id="launch-btn" class="button">Launch</button><br>
+                <button type="button" id="toggle-btn" class="button">Toggle</button><br>
+                <button type="button" id="clear-btn" class="button">Clear</button><br>
+            </div>
             <div class="half-document-width">
+                <h2>CSS Code</h2>
                 <textarea id="css-editor" class="editor">Blah</textarea>
             </div>
-        </div>
-        <div class="buttons">
-            <button type="button" id="launch-btn" class="button">Launch</button><br>
-            <button type="button" id="toggle-btn" class="button">Toggle</button><br>
-            <button type="button" id="clear-btn" class="button">Clear</button><br>
         </div>
         <div class="full-document-width display">
             <h1>blah</h1>
