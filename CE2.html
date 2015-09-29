@@ -2,6 +2,7 @@
 <html>
     <head>
         <title></title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
         <style>
             .both-editors {
                 width: 100%;
@@ -19,21 +20,39 @@
                 resize: none;
             }
             
+            .editor:focus {
+                outline: none;
+            }
+            
             .clear-float-box:after {
                 content: "";
                 display: table;
                 clear: both;
             } 
             
+            .floating-box {
+                position: fixed;
+                top: 222px;
+                right:20px;
+                width: 90px;
+                height: 120px;
+                background: rgba(0, 0, 0, 0.6);
+            }
+            
             .buttons {
-                width: 100%;
+                position: absolute;
+                top: 16px;
+                left: 15px;
             }
             
             .button {
+                margin-top: 2px;
                 height: 25px;
-                width: calc(100% / 3 - 2px);
-                float: left;
-                margin-right: 2px;
+                width: 60px;
+            }
+            
+            .backing-text {
+                font-family: Monospace;
             }
             
             #display {
@@ -42,6 +61,12 @@
                 overflow: auto;
                 border: 1px solid black;
                 margin-top: 4px;
+            }
+            
+            #move-icon {
+                position: absolute;
+                top: -20px;
+                right: -20px;
             }
             
             #html-backing {
@@ -86,7 +111,6 @@
                 var arrMatch = null;
                 var strMatch = "";
                 arrMatch = $('#css-editor').val().match(css_pattern);
-                console.dir(arrMatch);
                 var x;
                 for (x in arrMatch) {
                     if (arrMatch[x] != "") {
@@ -119,8 +143,40 @@
             function moveBackingText() {
                 var elementOffset = $()
                 var topOffset = $('#html-editor').offset().top + ($('#html-editor').height() / 2) - ($('#html-backing').height() / 2)
-                $('#html-backing').offset( {top: topOffset, left: 5} );
-                $('#css-backing').offset( {top: topOffset, left: 255} );
+                $('#html-backing').offset({
+                    top: topOffset, 
+                    left: $('#html-editor').offset().left + ($('#html-editor').width() / 2) - ($('#html-backing').width() / 2)
+                    
+                });
+                
+                $('#css-backing').offset({
+                    top: topOffset, 
+                    left: $('#css-editor').offset().left + ($('#css-editor').width() / 2) - ($('#css-backing').width() / 2)
+                    
+                });
+            }
+            
+            function moveFloatingBox() {
+                var $dragging = null;
+                
+                $('#move-icon').on("mousedown", function(e) {
+                    console.log("Mousedown");
+                    $dragging = $('.floating-box'); 
+                });
+                
+                $('#move-icon').on("mouseup", function(e) {
+                    console.log("Mouseup");
+                    $dragging = null;
+                });
+                
+                $(document.body).mousemove(function(e) {
+                    if($dragging) {
+                        $dragging.offset({
+                            top: e.pageY,
+                            left: e.pageX - $dragging.width() + 4
+                        });
+                    }
+                });
             }
         
             $(document).ready(function() {
@@ -131,6 +187,7 @@
                 clear_btn_click();
                 toggle_btn_click();
                 moveBackingText();
+                moveFloatingBox();
             });
             
             $(window).resize(function() {
@@ -170,15 +227,23 @@
             </div>
             
         </div>
-        <div class="clear-float-box buttons">
-            <button type="button" id="launch-btn" class="button">Launch</button>
-            <button type="button" id="toggle-btn" class="button">Toggle</button>
-            <button type="button" id="clear-btn" class="button">Clear</button>
+        <div class="floating-box">
+            <span class="fa-stack fa-lg" id="move-icon">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-arrows fa-stack-1x fa-inverse"></i>
+            </span>
+            <div class="clear-float-box buttons">
+                <button type="button" id="launch-btn" class="button">Launch</button>
+                <br>
+                <button type="button" id="toggle-btn" class="button">Toggle</button>
+                <br>
+                <button type="button" id="clear-btn" class="button">Clear</button>
+            </div>
         </div>
         <div id="display">
             Blah
         </div>
-        <div id="html-backing"><h1>HTML</h1></div>
-        <div id="css-backing"><h1>CSS</h1></div>
+        <div id="html-backing" class="backing-text"><h1>HTML</h1></div>
+        <div id="css-backing" class="backing-text"><h1>CSS</h1></div>
     </body>
 </html>
