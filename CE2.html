@@ -41,6 +41,12 @@
                 width: 90px;
                 height: 120px;
                 background: rgba(0, 0, 0, 0.4);
+                transition: height .5s, width .5s;
+            }
+            
+            .minimized {
+                height: 5px;
+                width: 30px;
             }
             
             .buttons {
@@ -74,6 +80,20 @@
                 overflow: auto;
                 border: 1px solid black;
                 margin-top: 4px;
+            }
+            
+            #minimize-icon {
+                position: absolute;
+                top: -7px;
+                left: -7px;
+                font-size: 10px;
+                transition: all .2s;
+            }
+            
+            #minimize-icon:hover {
+                top: -15px;
+                left: -15px;
+                font-size: 16px;
             }
             
             #move-icon {
@@ -169,18 +189,16 @@
                 var $dragging = null;
                 
                 $('#move-icon').on("mousedown touchstart", function(e) {
-                    e.preventDefault();
                     $dragging = $('.floating-box'); 
                 });
                 
                 $('#move-icon').on("mouseup touchend", function(e) {
-                    e.preventDefault();
                     $dragging = null;
                 });
                 
                 $(document.body).on("mousemove touchmove", function(e) {
-                    e.preventDefault();
                     if($dragging) {
+                        e.preventDefault();
                         $dragging.offset({
                             top: e.pageY,
                             left: e.pageX - $dragging.width() + 4
@@ -189,14 +207,19 @@
                 });
             }
             
-            function clickBehindBacking() {
-                $('#css-backing').click(function() {
-                    $('#css-editor').focus();
-                });
-                
-                $('#html-backing').click(function() {
-                    $('#html-editor').focus();
-                });
+            function offPageFloatingBox() {
+                if($('.floating-box').offset().top > $(window).height() - 90) {
+                    $('.floating-box').offset({
+                        top: $(window).height() - 100,
+                        left: $('.floating-box').offset().left
+                    });
+                }
+                if($('.floating-box').offset().left > $(window).width() - 90) {
+                    $('.floating-box').offset({
+                        top: $('.floating-box').offset().top,
+                        left: $(window).width() - 100
+                    });
+                }
             }
             
             function tabsInEditor() {
@@ -211,6 +234,16 @@
                     }
                 });
             }
+            
+            function minimizeFloatingBox() {
+                $('#minimize-icon').click(function() {
+                    $('.floating-box').toggleClass('minimized');
+                    $('.floating-box').hasClass('minimized') 
+                        ? $('#minimize-icon i').removeClass("fa-minus").addClass("fa-plus") 
+                        : $('#minimize-icon i').addClass("fa-minus").removeClass("fa-plus");
+                    $('.buttons').toggle(350);
+                });
+            }
         
             $(document).ready(function() {
                 console.log("Ready!");
@@ -221,21 +254,31 @@
                 toggle_btn_click();
                 moveBackingText();
                 moveFloatingBox();
-                clickBehindBacking();
                 tabsInEditor();
+                minimizeFloatingBox();
             });
             
             $(window).resize(function() {
                 setDisplayHeight();
                 moveBackingText();
-            })
+                offPageFloatingBox();
+            });
         </script>
     </head>
     <body>
-        <h1 id="page-header">Pah9qd's HTML and CSS Code Editor</h1>
+        <h1 id="page-header">Pah9qd's HTML and CSS Editor</h1>
         <div class="clear-float-box both-editors">
             <div id="html-box" class="editor-box">
-                <textarea id="html-editor" class="editor">Blah<h1>test</h1></textarea>
+                <textarea id="html-editor" class="editor">
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        
+    </body>
+</html>
+                </textarea>
             </div>
             <div id="css-box" class="editor-box">
                 <textarea id="css-editor" class="editor">
@@ -267,6 +310,10 @@
             <span class="fa-stack" id="move-icon">
                 <i class="fa fa-circle fa-stack-2x"></i>
                 <i class="fa fa-arrows fa-stack-1x fa-inverse"></i>
+            </span>
+            <span class="fa-stack" id="minimize-icon">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-minus fa-stack-1x fa-inverse"></i>
             </span>
             <div class="clear-float-box buttons">
                 <button type="button" id="launch-btn" class="button">Launch</button>
