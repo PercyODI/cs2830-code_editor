@@ -15,9 +15,12 @@
             }
             
             .editor {
+                position: relative;
                 width: 100%;
                 height: 200px;
                 resize: none;
+                z-index: 1;
+                background-color: rgba(255, 255, 255, .4);
             }
             
             .editor:focus {
@@ -31,12 +34,13 @@
             } 
             
             .floating-box {
+                z-index: 2;
                 position: fixed;
                 top: 222px;
                 right:20px;
                 width: 90px;
                 height: 120px;
-                background: rgba(0, 0, 0, 0.6);
+                background: rgba(0, 0, 0, 0.4);
             }
             
             .buttons {
@@ -53,11 +57,15 @@
             
             .backing-text {
                 font-family: Monospace;
+                position: absolute;
+                color: lightgray;
+                /*opacity: 0.6;*/
             }
             
             #page-header {
                 text-align: center;
                 margin: auto;
+                font-family: monospace;
             }
             
             #display {
@@ -70,26 +78,20 @@
             
             #move-icon {
                 position: absolute;
-                top: -20px;
-                right: -20px;
+                top: -7px;
+                right: -7px;
+                cursor: pointer;
+                font-size: 10px;
+                transition: all .2s;
             }
             
-            #html-backing {
-                position: absolute;
-                top: 60px;
-                left: 225px;
-                color: lightgray;
-                opacity: 0.6;
+            #move-icon:hover {
+                top: -15px;
+                right: -15px;
+                font-size: 16px;
+                transform: rotate(45deg);
             }
             
-            #css-backing {
-                position: absolute;
-                top: 60px;
-                left: 875px;
-                color: lightgray;
-                opacity: 0.6;
-                
-            }
         </style>
         <style id='user-style'></style>
         <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -105,9 +107,11 @@
             
             function clear_btn_click() {
                 $('#clear-btn').click(function() {
-                    $('#html-editor').val('');
-                    $('#css-editor').val('');
-                    $('#display').html('');
+                    if(confirm("Are you sure you want to clear everything? This action cannot be undone.")) {
+                        $('#html-editor').val('');
+                        $('#css-editor').val('');
+                        $('#display').html('');
+                    }
                 });
             }
             
@@ -164,22 +168,46 @@
             function moveFloatingBox() {
                 var $dragging = null;
                 
-                $('#move-icon').on("mousedown", function(e) {
-                    console.log("Mousedown");
+                $('#move-icon').on("mousedown touchstart", function(e) {
+                    e.preventDefault();
                     $dragging = $('.floating-box'); 
                 });
                 
-                $('#move-icon').on("mouseup", function(e) {
-                    console.log("Mouseup");
+                $('#move-icon').on("mouseup touchend", function(e) {
+                    e.preventDefault();
                     $dragging = null;
                 });
                 
-                $(document.body).mousemove(function(e) {
+                $(document.body).on("mousemove touchmove", function(e) {
+                    e.preventDefault();
                     if($dragging) {
                         $dragging.offset({
                             top: e.pageY,
                             left: e.pageX - $dragging.width() + 4
                         });
+                    }
+                });
+            }
+            
+            function clickBehindBacking() {
+                $('#css-backing').click(function() {
+                    $('#css-editor').focus();
+                });
+                
+                $('#html-backing').click(function() {
+                    $('#html-editor').focus();
+                });
+            }
+            
+            function tabsInEditor() {
+                $('.editor').keydown(function(e) {
+                    if(e.which == 9) {
+                        e.preventDefault();
+                        var cursorPos = this.selectionStart;
+                        console.log(e);
+                        console.log(this.selectionStart);
+                        $(this).val($(this).val().substring(0, cursorPos) + "    " + $(this).val().substring(cursorPos));
+                        this.setSelectionRange(cursorPos + 4, cursorPos + 4);
                     }
                 });
             }
@@ -193,6 +221,8 @@
                 toggle_btn_click();
                 moveBackingText();
                 moveFloatingBox();
+                clickBehindBacking();
+                tabsInEditor();
             });
             
             $(window).resize(function() {
@@ -234,7 +264,7 @@
             
         </div>
         <div class="floating-box">
-            <span class="fa-stack fa-lg" id="move-icon">
+            <span class="fa-stack" id="move-icon">
                 <i class="fa fa-circle fa-stack-2x"></i>
                 <i class="fa fa-arrows fa-stack-1x fa-inverse"></i>
             </span>
